@@ -89,6 +89,14 @@ const QUESTIONS = {
       source: "한국민족문화대백과사전, '대한민국 임시정부'",
       url: "https://encykorea.aks.ac.kr/Article/E0015017",
     },
+    {
+      question: "선조의 명으로 편찬을 시작해 1610년(광해군 2)에 의학서 『동의보감』을 완성한 인물은 누구인가?",
+      choices: ["허임", "허준", "이제마", "전순의"],
+      answer: 1,
+      explanation: "『동의보감』은 1613년 내의원에서 목활자로 처음 간행되었다.",
+      source: "한국민족문화대백과사전, '동의보감'",
+      url: "https://encykorea.aks.ac.kr/Article/E0016731",
+    },
   ],
   geography: [
     {
@@ -170,6 +178,14 @@ const QUESTIONS = {
       explanation: "후지산은 높이 3,776미터로 일본에서 가장 높은 산이다.",
       source: "브리태니커, 'Mount Fuji'",
       url: "https://www.britannica.com/place/Mount-Fuji",
+    },
+    {
+      question: "해발 5,895m의 화산 산괴인 킬리만자로산은 어느 나라에 있는가?",
+      choices: ["케냐", "르완다", "우간다", "탄자니아"],
+      answer: 3,
+      explanation: "킬리만자로산은 아프리카에서 가장 높은 곳이다.",
+      source: "브리태니커, 'Kilimanjaro'",
+      url: "https://www.britannica.com/place/Kilimanjaro",
     },
   ],
   science: [
@@ -253,6 +269,14 @@ const QUESTIONS = {
       source: "브리태니커 학생용, 'ozone'",
       url: "https://kids.britannica.com/students/article/ozone/609444",
     },
+    {
+      question: "원자 번호가 1인 원소는 무엇인가?",
+      choices: ["헬륨", "수소", "리튬", "산소"],
+      answer: 1,
+      explanation: "수소는 우주에서 가장 많은 원소이다.",
+      source: "영국 왕립화학회, 'Hydrogen'",
+      url: "https://periodic-table.rsc.org/element/1/hydrogen",
+    },
   ],
   culture: [
     {
@@ -334,6 +358,14 @@ const QUESTIONS = {
       explanation: "「별이 빛나는 밤」은 빈센트 반 고흐가 1889년 생레미의 요양원에서 그린 그림이다.",
       source: "뉴욕 현대 미술관(MoMA), 'Vincent van Gogh. The Starry Night'",
       url: "https://www.moma.org/collection/works/79802",
+    },
+    {
+      question: "1877년 모스크바 볼쇼이 극장에서 초연된 발레 「백조의 호수」의 음악을 작곡한 사람은 누구인가?",
+      choices: ["차이콥스키", "스트라빈스키", "프로코피예프", "림스키코르사코프"],
+      answer: 0,
+      explanation: "「백조의 호수」는 1895년 상트페테르부르크 마린스키 극장에서 프티파와 이바노프의 새 안무로 공연되었다.",
+      source: "마린스키 극장, 'Swan Lake'",
+      url: "https://www.mariinsky.ru/en/playbill/repertoire/ballet/swan_lake1/",
     },
   ],
 };
