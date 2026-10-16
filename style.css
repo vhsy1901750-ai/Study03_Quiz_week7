@@ -166,3 +166,18 @@ td {
   border-bottom: 1px solid #ddd;
   text-align: left;
 }
+
+.save-form {
+  margin: 12px 0;
+}
+
+.save-form input {
+  font: inherit;
+  padding: 10px;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+}
+
+.form-message {
+  color: #c62828;
+}

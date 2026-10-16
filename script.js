@@ -347,6 +347,7 @@ function showResult() {
   if (state.mode === "practice" && state.wrongIndices.length > 0) {
     nodes.push(button("틀린 문제 다시 풀기", startRetry));
   }
+  if (state.mode !== "practice") nodes.push(saveForm());
   nodes.push(button("처음으로", showStart));
   render(...nodes);
 }
@@ -552,6 +553,40 @@ function runSelfCheck() {
   }
   showStart();
   console.log(`자체 점검 결과: 통과 ${passed}, 실패 ${failed}`);
+}
+
+function saveForm() {
+  const form = el("form", undefined, "save-form");
+  const input = el("input");
+  input.maxLength = 10;
+  input.placeholder = "이름(10자까지)";
+  const saveButton = el("button", "순위표에 저장");
+  saveButton.type = "submit";
+  const message = el("p", undefined, "form-message");
+  form.append(input, saveButton, message);
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    saveRecord(input.value, saveButton, message);
+  });
+  return form;
+}
+
+function saveRecord(rawName, saveButton, message) {
+  const name = rawName.trim();
+  if (name === "") {
+    message.textContent = "이름을 입력해 주세요.";
+    return;
+  }
+  const record = { name, score: state.score, date: new Date().toISOString() };
+  try {
+    const records = addRecord(readRecords(state.mode, state.categoryId), record);
+    localStorage.setItem(leaderboardKey(state.mode, state.categoryId), JSON.stringify(records));
+  } catch {
+    message.textContent = "기록을 저장하지 못했습니다.";
+    return;
+  }
+  saveButton.disabled = true;
+  showLeaderboard(state.mode, state.categoryId);
 }
 
 function readRecords(mode, categoryId) {
