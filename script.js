@@ -16,14 +16,30 @@ function validateQuestions(categories, questions) {
   if (categories.length !== 4) {
     errors.push(`카테고리가 4개가 아닙니다(${categories.length}개).`);
   }
+  // 카테고리마다 문항 수가 같아야 한다. 기준은 문항이 있는 카테고리들에서 가장 많이 나온 수다.
+  const counts = categories
+    .map((category) => questions[category.id])
+    .filter((items) => Array.isArray(items) && items.length > 0)
+    .map((items) => items.length);
+  let expected = 0;
+  let bestFrequency = 0;
+  for (const count of counts) {
+    const frequency = counts.filter((other) => other === count).length;
+    if (frequency > bestFrequency) {
+      bestFrequency = frequency;
+      expected = count;
+    }
+  }
   for (const category of categories) {
     const items = questions[category.id];
     if (!Array.isArray(items)) {
       errors.push(`${category.id}: 문항 배열이 없습니다.`);
       continue;
     }
-    if (items.length !== 10) {
-      errors.push(`${category.id}: 문항이 10개가 아닙니다(${items.length}개).`);
+    if (items.length === 0) {
+      errors.push(`${category.id}: 문항이 없습니다.`);
+    } else if (items.length !== expected) {
+      errors.push(`${category.id}: 문항이 다른 카테고리와 같은 ${expected}개여야 합니다(${items.length}개).`);
     }
     items.forEach((item, i) => {
       const where = `${category.id} ${i + 1}번`;
@@ -397,10 +413,11 @@ const SELF_CHECKS = [
     showStart();
     check(app.textContent.includes(NOT_RECORDED), "안내 문구가 없음");
   }],
-  ["카테고리를 누르면 \"1 / 10\"과 보기 4개가 나온다", () => {
+  ["카테고리를 누르면 \"1 / 한 판의 문항 수\"와 보기 4개가 나온다", () => {
+    const total = QUESTIONS[CATEGORIES[0].id].length;
     showStart();
     app.querySelector(".categories button").click();
-    check(app.querySelector(".status").textContent.includes("1 / 10"), "진행 표시가 1 / 10이 아님");
+    check(app.querySelector(".status").textContent.includes(`1 / ${total}`), `진행 표시가 1 / ${total}이 아님`);
     check(app.querySelectorAll(".choice").length === 4, "보기가 4개가 아님");
   }],
   ["정답을 고르면 초록 표시, \"정답입니다.\", 점수 1점 증가", () => {
@@ -440,22 +457,25 @@ const SELF_CHECKS = [
       check(link.target === "_blank", `${when} 출처 링크가 새 탭으로 열리지 않음`);
     }
   }],
-  ["10번째 문항에서 버튼이 [결과 보기]로 바뀐다", () => {
+  ["마지막 문항에서 버튼이 [결과 보기]로 바뀐다", () => {
+    const total = QUESTIONS.history.length;
     startGame("practice", "history");
-    for (let n = 1; n <= 10; n++) {
+    for (let n = 1; n <= total; n++) {
       choiceButton(currentQuestion().answer).click();
       const label = app.querySelector("#feedback button").textContent;
-      check(label === (n === 10 ? "결과 보기" : "다음"), `${n}번째 문항의 버튼이 "${label}"임`);
+      check(label === (n === total ? "결과 보기" : "다음"), `${n}번째 문항의 버튼이 "${label}"임`);
       app.querySelector("#feedback button").click();
     }
   }],
-  ["결과 화면에 \"x / 10\"과 \"순위표에 기록되지 않음\"이 나온다", () => {
+  ["결과 화면에 \"x / 한 판의 문항 수\"와 \"순위표에 기록되지 않음\"이 나온다", () => {
+    const total = QUESTIONS.history.length;
     startGame("practice", "history");
     while (app.querySelector(".choice")) answerAndNext(currentQuestion().answer);
-    check(app.querySelector(".final-score").textContent === "10 / 10", "점수 표시가 10 / 10이 아님");
+    check(app.querySelector(".final-score").textContent === `${total} / ${total}`, `점수 표시가 ${total} / ${total}이 아님`);
     check(app.textContent.includes(NOT_RECORDED), "안내 문구가 없음");
   }],
   ["문항별 결과 목록의 ✔/✘와 정답 표시가 실제 답과 일치한다", () => {
+    const total = QUESTIONS.history.length;
     const wrongAt = [2, 5, 9];
     startGame("practice", "history");
     for (let n = 1; app.querySelector(".choice"); n++) {
@@ -463,16 +483,16 @@ const SELF_CHECKS = [
       answerAndNext(wrongAt.includes(n) ? (answer + 1) % 4 : answer);
     }
     const rows = [...app.querySelectorAll(".review li")];
-    check(rows.length === 10, `목록이 ${rows.length}개임`);
+    check(rows.length === total, `목록이 ${rows.length}개임`);
     rows.forEach((row, i) => {
       const wrong = wrongAt.includes(i + 1);
       check(row.className === (wrong ? "review-wrong" : "review-correct"), `${i + 1}번 표시가 다름`);
       check(row.textContent.includes(wrong ? "✘" : "✔"), `${i + 1}번 기호가 다름`);
       check(row.textContent.includes("정답:") === wrong, `${i + 1}번 정답 표시가 다름`);
     });
-    check(app.querySelector(".final-score").textContent === "7 / 10", "점수 표시가 7 / 10이 아님");
+    check(app.querySelector(".final-score").textContent === `${total - 3} / ${total}`, `점수 표시가 ${total - 3} / ${total}이 아님`);
   }],
-  ["카테고리 4개 모두 10문항씩 끝까지 진행되고 가로 스크롤이 없다", () => {
+  ["카테고리 4개 모두 문항 전부가 끝까지 진행되고 가로 스크롤이 없다", () => {
     const page = document.documentElement;
     for (const category of CATEGORIES) {
       startGame("practice", category.id);
@@ -483,7 +503,7 @@ const SELF_CHECKS = [
         check(page.scrollWidth <= page.clientWidth, `${category.name} ${count}번에서 가로 스크롤이 생김`);
         app.querySelector("#feedback button").click();
       }
-      check(count === 10, `${category.name} 문항이 ${count}개임`);
+      check(count === QUESTIONS[category.id].length, `${category.name} 문항이 ${count}개만 나옴`);
       check(page.scrollWidth <= page.clientWidth, `${category.name} 결과 화면에서 가로 스크롤이 생김`);
     }
   }],
@@ -503,6 +523,7 @@ const SELF_CHECKS = [
     check(state.timerId === null, "시간 초과 뒤에도 타이머가 멈추지 않음");
   }],
   ["힌트: 오답 2개가 잠기고, 힌트를 쓰고 맞히면 0.5점이며 결과 목록에 표시된다", () => {
+    const total = QUESTIONS.history.length;
     startGame("hint", "history");
     const answer = currentQuestion().answer;
     document.getElementById("hint").click();
@@ -515,12 +536,13 @@ const SELF_CHECKS = [
     app.querySelector("#feedback button").click();
     check(!document.getElementById("hint").disabled, "다음 문항에서 힌트를 쓸 수 없음");
     while (app.querySelector(".choice")) answerAndNext(currentQuestion().answer);
-    check(app.querySelector(".final-score").textContent === "9.5 / 10", "점수 표시가 9.5 / 10이 아님");
+    check(app.querySelector(".final-score").textContent === `${total - 0.5} / ${total}`, `점수 표시가 ${total - 0.5} / ${total}이 아님`);
     const details = [...app.querySelectorAll(".review-detail")].map((p) => p.textContent);
     check(details[0].endsWith("(힌트 사용, 0.5점)"), "1번에 힌트 사용 표시가 없음");
     check(!details[1].includes("힌트 사용"), "힌트를 쓰지 않은 2번에 힌트 사용 표시가 있음");
   }],
   ["다시 풀기: 틀린 문항만 다시 나오고 처음 점수는 그대로이며, 스피드와 힌트 결과에는 버튼이 없다", () => {
+    const total = QUESTIONS.history.length;
     for (const mode of ["speed", "hint"]) {
       startGame(mode, "history");
       answerAndNext((currentQuestion().answer + 1) % 4);
@@ -542,7 +564,7 @@ const SELF_CHECKS = [
     }
     check(seen.join() === wrongAt.join(), `다시 나온 문항이 ${seen.join(", ")}번임`);
     check(app.querySelector(".final-score").textContent === "다시 풀기 3문제 중 3문제 정답", "다시 풀기 결과 문구가 다름");
-    check(app.textContent.includes("처음 점수 7 / 10"), "처음 점수가 7 / 10이 아님");
+    check(app.textContent.includes(`처음 점수 ${total - 3} / ${total}`), `처음 점수가 ${total - 3} / ${total}이 아님`);
     check(!buttonByText("틀린 문제 다시 풀기"), "다 맞혔는데 다시 풀기 버튼이 있음");
   }],
 ];

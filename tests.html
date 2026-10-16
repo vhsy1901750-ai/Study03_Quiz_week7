@@ -78,14 +78,14 @@
       }, overrides);
     }
 
-    function makeData() {
+    function makeData(perCategory = 10) {
       const categories = [
         { id: "a", name: "A" }, { id: "b", name: "B" },
         { id: "c", name: "C" }, { id: "d", name: "D" },
       ];
       const questions = {};
       for (const category of categories) {
-        questions[category.id] = Array.from({ length: 10 }, () => makeItem({}));
+        questions[category.id] = Array.from({ length: perCategory }, () => makeItem({}));
       }
       return { categories, questions };
     }
@@ -106,10 +106,28 @@
       assertIncludes(validateQuestions(categories, questions), "b: 문항 배열이 없습니다.");
     });
 
-    test("validateQuestions: 문항이 10개가 아니면 오류", () => {
+    test("validateQuestions: 카테고리마다 문항 수가 다르면 오류", () => {
       const { categories, questions } = makeData();
       questions.a.pop();
-      assertIncludes(validateQuestions(categories, questions), "a: 문항이 10개가 아닙니다(9개).");
+      assertEqual(validateQuestions(categories, questions), ["a: 문항이 다른 카테고리와 같은 10개여야 합니다(9개)."]);
+    });
+
+    test("validateQuestions: 카테고리마다 12개씩이어도 오류가 없다", () => {
+      const { categories, questions } = makeData(12);
+      assertEqual(validateQuestions(categories, questions), []);
+    });
+
+    test("validateQuestions: 문항이 0개인 카테고리는 오류", () => {
+      const { categories, questions } = makeData(0);
+      assertIncludes(validateQuestions(categories, questions), "a: 문항이 없습니다.");
+    });
+
+    test("validateQuestions: 한 카테고리만 채워져 있으면 나머지가 오류", () => {
+      const { categories, questions } = makeData(0);
+      questions.a = Array.from({ length: 11 }, () => makeItem({}));
+      const errors = validateQuestions(categories, questions);
+      assertIncludes(errors, "b: 문항이 없습니다.");
+      assertEqual(errors.some((e) => e.startsWith("a:")), false);
     });
 
     test("validateQuestions: 문제, 해설, 출처가 비어 있으면 오류", () => {
