@@ -97,6 +97,14 @@ const QUESTIONS = {
       source: "한국민족문화대백과사전, '동의보감'",
       url: "https://encykorea.aks.ac.kr/Article/E0016731",
     },
+    {
+      question: "세종 때 함길도 북방에 6진을 개척하는 일을 맡은 인물은 누구인가?",
+      choices: ["김종서", "최윤덕", "이종무", "신숙주"],
+      answer: 0,
+      explanation: "김종서가 개척한 6진은 두만강 유역에 설치되었다.",
+      source: "한국민족문화대백과사전, '김종서'",
+      url: "https://encykorea.aks.ac.kr/Article/E0010494",
+    },
   ],
   geography: [
     {
@@ -186,6 +194,14 @@ const QUESTIONS = {
       explanation: "킬리만자로산은 아프리카에서 가장 높은 곳이다.",
       source: "브리태니커, 'Kilimanjaro'",
       url: "https://www.britannica.com/place/Kilimanjaro",
+    },
+    {
+      question: "잉카 제국의 유적으로 1983년 유네스코 세계유산에 등재된 마추픽추는 어느 나라에 있는가?",
+      choices: ["칠레", "페루", "볼리비아", "에콰도르"],
+      answer: 1,
+      explanation: "마추픽추는 1911년에야 바깥 세계에 널리 알려졌다.",
+      source: "유네스코 세계유산센터, 'Historic Sanctuary of Machu Picchu'",
+      url: "https://whc.unesco.org/en/list/274/",
     },
   ],
   science: [
@@ -277,6 +293,14 @@ const QUESTIONS = {
       source: "영국 왕립화학회, 'Hydrogen'",
       url: "https://periodic-table.rsc.org/element/1/hydrogen",
     },
+    {
+      question: "1869년 원소를 원자량이 커지는 순서로 배열한 주기율표를 발표한 러시아 화학자는 누구인가?",
+      choices: ["멘델레예프", "라부아지에", "아보가드로", "러더퍼드"],
+      answer: 0,
+      explanation: "멘델레예프가 존재를 예측한 원소 가운데 갈륨은 1875년에 발견되었다.",
+      source: "브리태니커, 'Dmitri Mendeleev'",
+      url: "https://www.britannica.com/biography/Dmitri-Mendeleev",
+    },
   ],
   culture: [
     {
@@ -366,6 +390,14 @@ const QUESTIONS = {
       explanation: "「백조의 호수」는 1895년 상트페테르부르크 마린스키 극장에서 프티파와 이바노프의 새 안무로 공연되었다.",
       source: "마린스키 극장, 'Swan Lake'",
       url: "https://www.mariinsky.ru/en/playbill/repertoire/ballet/swan_lake1/",
+    },
+    {
+      question: "봄, 여름, 가을, 겨울을 표현한 바이올린 협주곡 4곡 「사계」를 작곡한 사람은 누구인가?",
+      choices: ["비발디", "바흐", "헨델", "텔레만"],
+      answer: 0,
+      explanation: "「사계」는 1725년 협주곡집 「화성과 창의의 시도」에 실려 출판되었다.",
+      source: "브리태니커, 'The Four Seasons'",
+      url: "https://www.britannica.com/topic/The-Four-Seasons-by-Vivaldi",
     },
   ],
 };
