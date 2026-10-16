@@ -105,6 +105,14 @@ const QUESTIONS = {
       source: "한국민족문화대백과사전, '김종서'",
       url: "https://encykorea.aks.ac.kr/Article/E0010494",
     },
+    {
+      question: "1377년 청주 흥덕사에서 금속 활자로 찍어 낸, 백운 경한이 엮은 불교 책은 무엇인가?",
+      choices: ["『직지심체요절』", "『삼국유사』", "『제왕운기』", "『동국통감』"],
+      answer: 0,
+      explanation: "『직지심체요절』은 2001년 유네스코 세계기록유산에 등재되었다.",
+      source: "한국민족문화대백과사전, '불조직지심체요절'",
+      url: "https://encykorea.aks.ac.kr/Article/E0025035",
+    },
   ],
   geography: [
     {
@@ -202,6 +210,14 @@ const QUESTIONS = {
       explanation: "마추픽추는 1911년에야 바깥 세계에 널리 알려졌다.",
       source: "유네스코 세계유산센터, 'Historic Sanctuary of Machu Picchu'",
       url: "https://whc.unesco.org/en/list/274/",
+    },
+    {
+      question: "잠비아와 짐바브웨에 걸쳐 있는 빅토리아 폭포는 어느 강에 있는가?",
+      choices: ["나일강", "콩고강", "니제르강", "잠베지강"],
+      answer: 3,
+      explanation: "빅토리아 폭포는 1989년 유네스코 세계유산에 등재되었다.",
+      source: "유네스코 세계유산센터, 'Mosi-oa-Tunya / Victoria Falls'",
+      url: "https://whc.unesco.org/en/list/509/",
     },
   ],
   science: [
@@ -301,6 +317,14 @@ const QUESTIONS = {
       source: "브리태니커, 'Dmitri Mendeleev'",
       url: "https://www.britannica.com/biography/Dmitri-Mendeleev",
     },
+    {
+      question: "1928년 세균을 기르던 접시에 핀 곰팡이가 세균의 성장을 막는 것을 보고 페니실린을 발견한 과학자는 누구인가?",
+      choices: ["플레밍", "리스터", "제너", "에를리히"],
+      answer: 0,
+      explanation: "플레밍은 이 발견으로 1945년 플로리, 체인과 함께 노벨 생리의학상을 받았다.",
+      source: "노벨재단, 'Sir Alexander Fleming – Facts'",
+      url: "https://www.nobelprize.org/prizes/medicine/1945/fleming/facts/",
+    },
   ],
   culture: [
     {
@@ -398,6 +422,14 @@ const QUESTIONS = {
       explanation: "「사계」는 1725년 협주곡집 「화성과 창의의 시도」에 실려 출판되었다.",
       source: "브리태니커, 'The Four Seasons'",
       url: "https://www.britannica.com/topic/The-Four-Seasons-by-Vivaldi",
+    },
+    {
+      question: "1937년 4월 26일 폭격을 당한 도시를 주제로 그린 대작 「게르니카」의 화가는 누구인가?",
+      choices: ["피카소", "마티스", "달리", "미로"],
+      answer: 0,
+      explanation: "「게르니카」는 1937년 파리 만국 박람회에 전시되었다.",
+      source: "레이나 소피아 미술관, 'Rethinking Guernica'",
+      url: "https://guernica.museoreinasofia.es/en",
     },
   ],
 };
