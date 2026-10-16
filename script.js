@@ -59,6 +59,27 @@ function pickHintRemovals(answer, random = Math.random) {
   return wrong.filter((_, i) => i !== keep);
 }
 
+const LEADERBOARD_SIZE = 5;
+
+function leaderboardKey(mode, categoryId) {
+  return `quiz.leaderboard.${mode}.${categoryId}`;
+}
+
+function addRecord(records, record) {
+  return [...records, record]
+    .sort((a, b) => b.score - a.score || a.date.localeCompare(b.date))
+    .slice(0, LEADERBOARD_SIZE);
+}
+
+function parseRecords(raw) {
+  try {
+    const records = JSON.parse(raw);
+    return Array.isArray(records) ? records : [];
+  } catch {
+    return [];
+  }
+}
+
 // ===== 상태 =====
 
 const MODE_NAMES = { practice: "연습", speed: "스피드", hint: "힌트" };
@@ -147,7 +168,11 @@ function showStart() {
     el("p", MODE_DESCRIPTIONS[state.mode]),
   ];
   if (state.mode === "practice") nodes.push(el("p", NOT_RECORDED, "notice"));
-  nodes.push(el("h2", "카테고리를 고르세요"), categoryButtons);
+  nodes.push(
+    el("h2", "카테고리를 고르세요"),
+    categoryButtons,
+    button("순위표", () => showLeaderboard()),
+  );
   render(...nodes);
 }
 
@@ -331,6 +356,7 @@ function showResult() {
   if (state.mode === "practice" && state.wrongIndices.length > 0) {
     nodes.push(button("틀린 문제 다시 풀기", startRetry));
   }
+  if (state.mode !== "practice") nodes.push(saveForm());
   nodes.push(button("처음으로", showStart));
   render(...nodes);
 }
@@ -536,6 +562,93 @@ function runSelfCheck() {
   }
   showStart();
   console.log(`자체 점검 결과: 통과 ${passed}, 실패 ${failed}`);
+}
+
+function saveForm() {
+  const form = el("form", undefined, "save-form");
+  const input = el("input");
+  input.maxLength = 10;
+  input.placeholder = "이름(10자까지)";
+  const saveButton = el("button", "순위표에 저장");
+  saveButton.type = "submit";
+  const message = el("p", undefined, "form-message");
+  form.append(input, saveButton, message);
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    saveRecord(input.value, saveButton, message);
+  });
+  return form;
+}
+
+function saveRecord(rawName, saveButton, message) {
+  const name = rawName.trim();
+  if (name === "") {
+    message.textContent = "이름을 입력해 주세요.";
+    return;
+  }
+  const record = { name, score: state.score, date: new Date().toISOString() };
+  try {
+    const records = addRecord(readRecords(state.mode, state.categoryId), record);
+    localStorage.setItem(leaderboardKey(state.mode, state.categoryId), JSON.stringify(records));
+  } catch {
+    message.textContent = "기록을 저장하지 못했습니다.";
+    return;
+  }
+  saveButton.disabled = true;
+  showLeaderboard(state.mode, state.categoryId);
+}
+
+function readRecords(mode, categoryId) {
+  return parseRecords(localStorage.getItem(leaderboardKey(mode, categoryId)));
+}
+
+function showLeaderboard(mode = "speed", categoryId = CATEGORIES[0].id) {
+  const modeButtons = el("div", undefined, "modes");
+  for (const m of ["speed", "hint"]) {
+    const className = m === mode ? "mode selected" : "mode";
+    modeButtons.append(button(MODE_NAMES[m], () => showLeaderboard(m, categoryId), className));
+  }
+
+  const categoryButtons = el("div", undefined, "categories");
+  for (const category of CATEGORIES) {
+    const className = category.id === categoryId ? "selected" : undefined;
+    categoryButtons.append(button(category.name, () => showLeaderboard(mode, category.id), className));
+  }
+
+  let records;
+  try {
+    records = readRecords(mode, categoryId);
+  } catch {
+    records = [];
+  }
+
+  const nodes = [
+    el("h1", "순위표"),
+    modeButtons,
+    categoryButtons,
+    el("h2", `${MODE_NAMES[mode]}, ${categoryName(categoryId)}`),
+  ];
+  if (records.length === 0) {
+    nodes.push(el("p", "아직 기록이 없습니다."));
+  } else {
+    const table = el("table");
+    const head = el("tr");
+    for (const title of ["순위", "이름", "점수", "날짜"]) head.append(el("th", title));
+    table.append(head);
+    records.forEach((record, i) => {
+      const row = el("tr");
+      row.append(
+        el("td", String(i + 1)),
+        el("td", record.name),
+        el("td", formatScore(record.score)),
+        el("td", new Date(record.date).toLocaleDateString("ko-KR")),
+      );
+      table.append(row);
+    });
+    nodes.push(table);
+  }
+  nodes.push(button("처음으로", showStart));
+  render(...nodes);
 }
 
 if (app) showStart();
