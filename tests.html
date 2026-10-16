@@ -187,6 +187,53 @@
       assertEqual(removals.includes(1), false);
     });
 
+    function makeRecord(name, score, date) {
+      return { name, score, date };
+    }
+
+    test("leaderboardKey: 모드와 카테고리로 키를 만든다", () => {
+      assertEqual(leaderboardKey("speed", "history"), "quiz.leaderboard.speed.history");
+      assertEqual(leaderboardKey("hint", "culture"), "quiz.leaderboard.hint.culture");
+    });
+
+    test("addRecord: 빈 목록에 기록 하나를 넣는다", () => {
+      const record = makeRecord("가", 7, "2026-10-01T00:00:00.000Z");
+      assertEqual(addRecord([], record), [record]);
+    });
+
+    test("addRecord: 점수 높은 순으로 정렬한다", () => {
+      const records = [
+        makeRecord("가", 9, "2026-10-01T00:00:00.000Z"),
+        makeRecord("나", 5, "2026-10-02T00:00:00.000Z"),
+      ];
+      const result = addRecord(records, makeRecord("다", 7.5, "2026-10-03T00:00:00.000Z"));
+      assertEqual(result.map((r) => r.name), ["가", "다", "나"]);
+    });
+
+    test("addRecord: 동점이면 먼저 세운 기록이 위에 온다", () => {
+      const records = [makeRecord("먼저", 7, "2026-10-01T00:00:00.000Z")];
+      const result = addRecord(records, makeRecord("나중", 7, "2026-10-02T00:00:00.000Z"));
+      assertEqual(result.map((r) => r.name), ["먼저", "나중"]);
+    });
+
+    test("addRecord: 상위 5개만 남기고 가장 낮은 점수를 뺀다", () => {
+      const records = [
+        makeRecord("가", 10, "2026-10-01T00:00:00.000Z"),
+        makeRecord("나", 9, "2026-10-01T00:00:01.000Z"),
+        makeRecord("다", 8, "2026-10-01T00:00:02.000Z"),
+        makeRecord("라", 7, "2026-10-01T00:00:03.000Z"),
+        makeRecord("마", 6, "2026-10-01T00:00:04.000Z"),
+      ];
+      const result = addRecord(records, makeRecord("바", 6.5, "2026-10-02T00:00:00.000Z"));
+      assertEqual(result.map((r) => r.name), ["가", "나", "다", "라", "바"]);
+    });
+
+    test("addRecord: 원래 배열은 바꾸지 않는다", () => {
+      const records = [makeRecord("가", 5, "2026-10-01T00:00:00.000Z")];
+      addRecord(records, makeRecord("나", 9, "2026-10-02T00:00:00.000Z"));
+      assertEqual(records.map((r) => r.name), ["가"]);
+    });
+
     // ===== 테스트 끝 =====
 
     document.getElementById("summary").textContent =

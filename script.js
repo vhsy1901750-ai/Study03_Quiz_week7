@@ -59,6 +59,18 @@ function pickHintRemovals(answer, random = Math.random) {
   return wrong.filter((_, i) => i !== keep);
 }
 
+const LEADERBOARD_SIZE = 5;
+
+function leaderboardKey(mode, categoryId) {
+  return `quiz.leaderboard.${mode}.${categoryId}`;
+}
+
+function addRecord(records, record) {
+  return [...records, record]
+    .sort((a, b) => b.score - a.score || a.date.localeCompare(b.date))
+    .slice(0, LEADERBOARD_SIZE);
+}
+
 // ===== 상태 =====
 
 const MODE_NAMES = { practice: "연습", speed: "스피드", hint: "힌트" };
