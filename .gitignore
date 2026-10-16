@@ -1,4 +1,5 @@
 # 생성: 2026-10-07 23:40 KST
 
 # Claude Code 로컬 설정(검증용 서버 설정 등)
-.claude/
+.claude/*
+!.claude/commands/
