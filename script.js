@@ -71,6 +71,15 @@ function addRecord(records, record) {
     .slice(0, LEADERBOARD_SIZE);
 }
 
+function parseRecords(raw) {
+  try {
+    const records = JSON.parse(raw);
+    return Array.isArray(records) ? records : [];
+  } catch {
+    return [];
+  }
+}
+
 // ===== 상태 =====
 
 const MODE_NAMES = { practice: "연습", speed: "스피드", hint: "힌트" };
@@ -590,7 +599,7 @@ function saveRecord(rawName, saveButton, message) {
 }
 
 function readRecords(mode, categoryId) {
-  return JSON.parse(localStorage.getItem(leaderboardKey(mode, categoryId))) || [];
+  return parseRecords(localStorage.getItem(leaderboardKey(mode, categoryId)));
 }
 
 function showLeaderboard(mode = "speed", categoryId = CATEGORIES[0].id) {

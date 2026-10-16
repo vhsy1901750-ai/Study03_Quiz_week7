@@ -234,6 +234,24 @@
       assertEqual(records.map((r) => r.name), ["가"]);
     });
 
+    test("parseRecords: 저장된 값이 없으면 빈 목록", () => {
+      assertEqual(parseRecords(null), []);
+    });
+
+    test("parseRecords: 기록 배열을 읽는다", () => {
+      const records = [makeRecord("가", 7, "2026-10-01T00:00:00.000Z")];
+      assertEqual(parseRecords(JSON.stringify(records)), records);
+    });
+
+    test("parseRecords: 깨진 값이면 빈 목록", () => {
+      assertEqual(parseRecords("{깨짐"), []);
+    });
+
+    test("parseRecords: 배열이 아닌 값이면 빈 목록", () => {
+      assertEqual(parseRecords("{}"), []);
+      assertEqual(parseRecords("3"), []);
+    });
+
     // ===== 테스트 끝 =====
 
     document.getElementById("summary").textContent =
