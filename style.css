@@ -147,3 +147,22 @@ button:disabled {
   opacity: 0.3;
   text-decoration: line-through;
 }
+
+.categories .selected {
+  background: #222;
+  color: #fff;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  margin: 12px 0;
+}
+
+th,
+td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
